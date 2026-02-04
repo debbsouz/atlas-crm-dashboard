@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas CRM - Dashboard</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">Atlas CRM</div>
+<nav class="sidebar-nav">
+<a href="dashboard.html" class="nav-link active">Dashboard</a>
+<a href="clients.html" class="nav-link">Clientes</a>
+<button type="button" class="btn" data-logout>Sair</button>
+</nav>
+</aside>
+<main class="main">
+<header class="page-header">
+<div class="container">
+<h1>Atlas CRM</h1>
+</div>
+</header>
+<section class="container">
+<div class="cards">
+<div class="card">
+<div class="card-title">Total de Clientes</div>
+<div class="card-value" data-metric="clients">0</div>
+</div>
+<div class="card">
+<div class="card-title">Leads</div>
+<div class="card-value" data-metric="leads">0</div>
+</div>
+<div class="card">
+<div class="card-title">Vendas Fechadas</div>
+<div class="card-value" data-metric="sales">0</div>
+</div>
+<div class="card">
+<div class="card-title">Receita Simulada</div>
+<div class="card-value" data-metric="revenue">R$ 0,00</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Scripts -->
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

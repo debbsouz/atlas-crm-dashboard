@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas CRM - Login</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body class="auth-page">
+<!-- Container principal do login -->
+<div class="container">
+<h1>Atlas CRM</h1>
+<!-- Formulário de login: validação simples feita via JS -->
+<form id="login-form" class="card">
+<div class="field">
+<label for="email">Email</label>
+<input type="email" id="email" placeholder="seu@email.com" required>
+</div>
+<div class="field">
+<label for="password">Senha</label>
+<input type="password" id="password" placeholder="••••••••" required>
+</div>
+<button type="submit" class="btn primary">Entrar</button>
+</form>
+<!-- Mensagem de feedback para erros de validação -->
+<p id="login-msg" class="form-message" aria-live="polite"></p>
+</div>
+<!-- Script responsável por login fake e armazenamento no localStorage -->
+<script src="js/auth.js"></script>
+</body>
+</html>
