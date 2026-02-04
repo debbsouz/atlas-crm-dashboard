@@ -31,7 +31,7 @@ body {
 }
 .sidebar .brand {
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
   margin-bottom: 12px;
 }
 .sidebar-nav {
@@ -42,13 +42,15 @@ body {
 .sidebar-nav .nav-link {
   display: block;
   text-decoration: none;
-  color: #374151;
+  color: var(--muted);
   padding: 10px 12px;
   border-radius: 6px;
 }
 .sidebar-nav .nav-link.active {
-  background: #e5e7eb;
+  background: rgba(59, 130, 246, 0.18);
+  color: var(--text);
 }
+.sidebar-nav .nav-link:hover { background: rgba(59,130,246,0.10); }
 .main {
   margin-left: 240px;
   width: 100%;

@@ -1,16 +1,28 @@
 :root {
-  --bg: #f5f7fa;
-  --surface: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --primary: #2563eb;
-  --border: #e5e7eb;
+  --bg: #0b1220;            /* background principal (dark azul) */
+  --surface: #0f172a;       /* background secundário (variação do azul) */
+  --text: #e5e7eb;          /* texto claro padrão */
+  --muted: #94a3b8;
+  --primary: #3b82f6;
+  --border: #1f2a37;
   --success: #16a34a;
   --warning: #f59e0b;
   --danger: #dc2626;
   --radius: 10px;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 4px 8px rgba(16, 24, 40, 0.08);
+  --shadow-sm: 0 1px 2px rgba(2, 8, 23, 0.4);
+  --shadow-md: 0 6px 14px rgba(2, 8, 23, 0.5);
+}
+
+/* Tema dark elegante com destaque azul */
+.theme-dark {
+  --bg: #0b1220;
+  --surface: #0f172a;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --primary: #3b82f6;
+  --border: #1f2a37;
+  --shadow-sm: 0 1px 2px rgba(2, 8, 23, 0.4);
+  --shadow-md: 0 6px 14px rgba(2, 8, 23, 0.5);
 }
 
 *,
@@ -25,6 +37,7 @@ html, body {
 
 html {
   -webkit-text-size-adjust: 100%;
+  background: var(--bg) !important;
 }
 
 body, h1, h2, h3, h4, h5, h6, p, ul, ol {
@@ -42,10 +55,15 @@ img, svg, video {
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg) !important;
+  color: var(--text) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   line-height: 1.5;
+}
+
+/* Reset de fundo para elementos estruturais (evita brancos herdados) */
+header, main, aside, section, nav {
+  background: transparent;
 }
 
 h1 {
