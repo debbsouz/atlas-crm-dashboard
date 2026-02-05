@@ -44,6 +44,13 @@
         + "<div class=\"empty-title\">Nenhum resultado encontrado</div>"
         + "<div class=\"empty-subtitle\">Ajuste a busca ou filtros para encontrar clientes.</div>"
         + "</div></td></tr>";
+      if (window.Toast) {
+        var nowTs = Date.now();
+        if (!renderTable._lastInfo || (nowTs - renderTable._lastInfo) > 4000) {
+          Toast.show("info", "Nenhum resultado com o filtro atual");
+          renderTable._lastInfo = nowTs;
+        }
+      }
       return;
     }
     tbody.innerHTML = view.map(function (row) {
@@ -153,6 +160,8 @@
     }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      var saveBtn = document.getElementById("modal-save");
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Salvando…"; }
       var name = document.getElementById("m-name").value.trim();
       var company = document.getElementById("m-company").value.trim();
       var email = document.getElementById("m-email").value.trim();
@@ -162,12 +171,15 @@
       if (editingIndex !== null) {
         if (typeof AtlasState !== "undefined") { AtlasState.updateClient(editingIndex, payload); }
         clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
+        if (window.Toast) Toast.show("success", "Cliente atualizado");
       } else {
         if (typeof AtlasState !== "undefined") { AtlasState.addClient(payload); }
         clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients.concat([payload]);
+        if (window.Toast) Toast.show("success", "Cliente criado");
       }
       closeModal();
       renderTable();
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Salvar"; }
     });
   }
   function renderHistory(index) {
@@ -226,9 +238,22 @@
           if (t.dataset.action === "edit") {
             openModal("edit", idx);
           } else if (t.dataset.action === "delete") {
-            if (typeof AtlasState !== "undefined") { AtlasState.removeClient(idx); }
-            clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
-            renderTable();
+            if (window.Confirm && typeof window.Confirm.open === "function") {
+              var c = clients[idx];
+              var msg = "Deseja excluir o cliente \"" + (c && c.name) + "\"?";
+              window.Confirm.open(msg, function () {
+                if (typeof AtlasState !== "undefined") { AtlasState.removeClient(idx); }
+                clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
+                renderTable();
+                if (window.Toast) Toast.show("success", "Cliente excluído");
+              }, function () {
+                if (window.Toast) Toast.show("info", "Exclusão cancelada");
+              });
+            } else {
+              if (typeof AtlasState !== "undefined") { AtlasState.removeClient(idx); }
+              clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
+              renderTable();
+            }
           }
         }
       });
@@ -270,6 +295,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showFeedback("Exportado " + view.length + " registros", true);
+    if (window.Toast) Toast.show("success", "Exportação concluída");
   }
   function parseCSV(text) {
     var rows = [];
@@ -308,6 +334,10 @@
     return isNaN(n) ? undefined : n;
   }
   function importCSV(file) {
+    var importBtn = document.getElementById("import-csv-btn");
+    var exportBtn = document.getElementById("export-csv-btn");
+    if (importBtn) { importBtn.disabled = true; importBtn.textContent = "Importando…"; }
+    if (exportBtn) { exportBtn.disabled = true; }
     var reader = new FileReader();
     reader.onload = function () {
       var text = String(reader.result || "");
@@ -336,8 +366,16 @@
       clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
       renderTable();
       showFeedback("Importados " + added + " registros" + (invalid ? (" • inválidos " + invalid) : ""), added > 0);
+      if (window.Toast) Toast.show(added > 0 ? "success" : "error", added > 0 ? "Importação concluída" : "Falha na importação");
+      if (importBtn) { importBtn.disabled = false; importBtn.textContent = "Importar CSV"; }
+      if (exportBtn) { exportBtn.disabled = false; }
     };
-    reader.onerror = function () { showFeedback("Erro ao ler arquivo", false); };
+    reader.onerror = function () {
+      showFeedback("Erro ao ler arquivo", false);
+      if (window.Toast) Toast.show("error", "Erro ao ler arquivo");
+      if (importBtn) { importBtn.disabled = false; importBtn.textContent = "Importar CSV"; }
+      if (exportBtn) { exportBtn.disabled = false; }
+    };
     reader.readAsText(file, "utf-8");
   }
   function normalizeStatus(s) {
