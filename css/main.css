@@ -309,6 +309,10 @@ select {
   display: grid;
   gap: 10px;
 }
+.pipeline-column.drop-active {
+  border-color: rgba(37,99,235,0.35);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.20) inset;
+}
 .deal-card {
   background: var(--card-bg);
   border: 1px solid var(--divider);
@@ -317,6 +321,11 @@ select {
   box-shadow: var(--shadow-sm);
   transition: transform .15s ease, box-shadow .15s ease;
   color: var(--text-light);
+}
+.deal-card.dragging {
+  opacity: 0.8;
+  box-shadow: var(--shadow-md);
+  transform: scale(0.98);
 }
 .deal-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .deal-title { font-weight: 600; }
