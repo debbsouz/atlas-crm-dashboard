@@ -10,6 +10,17 @@
     if (typeof AtlasState !== "undefined") AtlasState.setClients(clients);
   }
   var editingIndex = null;
+  var modalMode = "create";
+  function clearForm() {
+    var name = document.getElementById("m-name");
+    var company = document.getElementById("m-company");
+    var email = document.getElementById("m-email");
+    var status = document.getElementById("m-status");
+    if (name) name.value = "";
+    if (company) company.value = "";
+    if (email) email.value = "";
+    if (status) status.value = "lead";
+  }
   function badgeClass(status) {
     var s = (status || "").toLowerCase();
     if (s === "negociação") s = "negociacao";
@@ -38,7 +49,17 @@
     var company = document.getElementById("m-company");
     var email = document.getElementById("m-email");
     var status = document.getElementById("m-status");
+    var historyHost = document.getElementById("client-history");
+    if (!historyHost) {
+      historyHost = document.createElement("div");
+      historyHost.id = "client-history";
+      historyHost.className = "card";
+      historyHost.style.marginTop = "12px";
+      var m = document.querySelector("#client-modal .modal");
+      if (m) m.appendChild(historyHost);
+    }
     editingIndex = null;
+    modalMode = mode === "edit" ? "edit" : "create";
     title.textContent = mode === "edit" ? "Editar Cliente" : "Novo Cliente";
     if (mode === "edit" && typeof index === "number") {
       editingIndex = index;
@@ -47,22 +68,70 @@
       company.value = c.company;
       email.value = c.email;
       status.value = c.status;
+      renderHistory(index);
     } else {
-      name.value = "";
-      company.value = "";
-      email.value = "";
-      status.value = "lead";
+      clearForm();
+      historyHost.innerHTML = "";
     }
-    backdrop.hidden = false;
+    if (backdrop) {
+      backdrop.hidden = false;
+      backdrop.style.display = "grid";
+    }
   }
   function closeModal() {
     var backdrop = document.getElementById("client-modal");
-    if (backdrop) backdrop.hidden = true;
+    var form = document.getElementById("modal-form");
+    if (backdrop) {
+      if (form && typeof form.reset === "function") { form.reset(); }
+      backdrop.hidden = true;
+      clearForm();
+      editingIndex = null;
+      modalMode = "create";
+      var historyHost = document.getElementById("client-history");
+      if (historyHost) historyHost.innerHTML = "";
+    }
+  }
+  function closeClientForm() {
+    var backdrop = document.getElementById("client-modal");
+    var form = document.getElementById("modal-form");
+    var list = document.getElementById("clients-table");
+    if (form && typeof form.reset === "function") { form.reset(); }
+    clearForm();
+    editingIndex = null;
+    modalMode = "create";
+    if (backdrop) {
+      backdrop.hidden = true;
+      backdrop.style.display = "none";
+    }
+    if (list) {
+      list.style.removeProperty("display");
+    }
+    var historyHost = document.getElementById("client-history");
+    if (historyHost) historyHost.innerHTML = "";
   }
   function setupModal() {
     var cancel = document.getElementById("modal-cancel");
     var form = document.getElementById("modal-form");
-    cancel.addEventListener("click", function () { closeModal(); });
+    if (cancel) { cancel.setAttribute("type", "button"); }
+    cancel.addEventListener("click", function (e) {
+      console.log("[Clientes] Cancelar clicado");
+      e.preventDefault();
+      e.stopPropagation();
+      closeClientForm();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { closeModal(); }
+    });
+    var backdrop = document.getElementById("client-modal");
+    var modal = document.querySelector("#client-modal .modal");
+    if (backdrop) {
+      backdrop.addEventListener("click", function (e) {
+        if (e.target === backdrop) { closeModal(); }
+      });
+    }
+    if (modal) {
+      modal.addEventListener("click", function (e) { e.stopPropagation(); });
+    }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var name = document.getElementById("m-name").value.trim();
@@ -81,6 +150,30 @@
       closeModal();
       renderTable();
     });
+  }
+  function renderHistory(index) {
+    var host = document.getElementById("client-history");
+    if (!host) return;
+    var c = clients[index];
+    var items = Array.isArray(c.activities) ? c.activities.slice() : [];
+    items.sort(function (a, b) { return (b.at > a.at) ? 1 : (b.at < a.at) ? -1 : 0; });
+    var html = "<div class=\"card-title\">Histórico de atividades</div>";
+    if (items.length === 0) {
+      html += "<div class=\"deal-sub\">Sem atividades registradas</div>";
+    } else {
+      html += "<div class=\"pipeline-list\">";
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var dt = new Date(it.at);
+        var when = dt.toLocaleString('pt-BR', { hour12: false });
+        html += "<div class=\"deal-card\">"
+          + "<div class=\"deal-title\">" + it.description + "</div>"
+          + "<div class=\"deal-sub\">Tipo: " + it.type + " • " + when + "</div>"
+          + "</div>";
+      }
+      html += "</div>";
+    }
+    host.innerHTML = html;
   }
   function setupActions() {
     var newBtn = document.getElementById("new-client-btn");
@@ -106,6 +199,7 @@
     AtlasState.on("clients:changed", function () {
       clients = AtlasState.getClients();
       renderTable();
+      if (editingIndex !== null) { renderHistory(editingIndex); }
     });
   }
   setupModal();

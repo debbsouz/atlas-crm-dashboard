@@ -29,6 +29,20 @@
   }
   function saveDeals() { try { localStorage.setItem(KEY_DEALS, JSON.stringify(state.deals)); } catch (e) {} }
   function saveClients() { try { localStorage.setItem(KEY_CLIENTS, JSON.stringify(state.clients)); } catch (e) {} }
+  function nowISO() { return new Date().toISOString(); }
+  function addActivityForClient(name, company, type, description) {
+    for (var i = 0; i < state.clients.length; i++) {
+      var c = state.clients[i];
+      if (c.name === name && c.company === company) {
+        if (!Array.isArray(c.activities)) c.activities = [];
+        c.activities.push({ type: type, description: description, at: nowISO() });
+        // keep most recent first
+        c.activities.sort(function (a, b) { return (b.at > a.at) ? 1 : (b.at < a.at) ? -1 : 0; });
+        saveClients();
+        return;
+      }
+    }
+  }
   function stageToClientStatus(stage) {
     if (stage === "negociacao") return "negociação";
     if (stage === "fechado") return "fechado";
@@ -90,6 +104,10 @@
         saveClients();
         emit("clients:changed");
       }
+      addActivityForClient(state.deals[index].client, state.deals[index].company, "move", "Movido para \"" + stage + "\"");
+      if (stage === "fechado") {
+        addActivityForClient(state.deals[index].client, state.deals[index].company, "close", "Venda fechada");
+      }
       emit("deals:changed");
     }
   }
@@ -99,6 +117,7 @@
     var stage = clientStatusToStage(c.status);
     state.deals.push({ client: c.name, company: c.company, amount: c.amount || 0, stage: stage });
     saveDeals();
+    addActivityForClient(c.name, c.company, "create", "Cliente criado");
     emit("clients:changed");
     emit("deals:changed");
   }
@@ -116,6 +135,7 @@
         }
       }
       saveDeals();
+      addActivityForClient(c.name, c.company, "update", "Cliente atualizado");
       emit("clients:changed");
       emit("deals:changed");
     }
