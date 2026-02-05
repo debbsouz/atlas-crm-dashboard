@@ -62,18 +62,26 @@ body {
 .page-header {
   background: var(--header-bg);
   border-bottom: 1px solid var(--divider);
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  margin-bottom: 12px;
 }
 .page-header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
 }
 .userbar {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 12px;
   padding: 10px 0;
+  margin-left: auto;
 }
 .user-name {
   color: var(--text-light);
@@ -98,6 +106,9 @@ h1 {
 .topbar {
   background: var(--header-bg);
   border-bottom: 1px solid var(--divider);
+  min-height: 64px;
+  display: flex;
+  align-items: center;
 }
 .nav {
   display: flex;
