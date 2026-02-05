@@ -60,6 +60,29 @@ body {
   background: var(--header-bg);
   border-bottom: 1px solid var(--divider);
 }
+.userbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 10px 0;
+}
+.user-name {
+  color: var(--text-light);
+  font-weight: 600;
+}
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--primary-600);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
 h1 {
   font-size: 24px;
   margin: 16px 0;
