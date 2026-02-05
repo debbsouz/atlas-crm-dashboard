@@ -15,6 +15,7 @@
     setMetric("leads", totalLeads);
     setMetric("sales", totalSales);
     setMetric("revenue", fmtBRL(revenue));
+    renderEmptyBanner(totalClients, deals.length);
   }
   function setMetric(name, value) {
     var el = document.querySelector('[data-metric="' + name + '"]');
@@ -24,5 +25,25 @@
   if (typeof AtlasState !== "undefined") {
     AtlasState.on("deals:changed", compute);
     AtlasState.on("clients:changed", compute);
+  }
+  function renderEmptyBanner(tc, td) {
+    var section = document.querySelector("section.container");
+    if (!section) return;
+    var banner = document.getElementById("dashboard-empty");
+    var need = (tc === 0 && td === 0);
+    if (need) {
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "dashboard-empty";
+        banner.className = "empty";
+        banner.style.marginBottom = "12px";
+        section.insertBefore(banner, section.firstChild);
+      }
+      banner.innerHTML = "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 13h2a7 7 0 0014 0h2a9 9 0 11-18 0zM12 3a9 9 0 019 9h-2a7 7 0 00-14 0H3a9 9 0 019-9z\"/></svg></div>"
+        + "<div class=\"empty-title\">Sem dados para métricas</div>"
+        + "<div class=\"empty-subtitle\">Cadastre clientes e negociações para visualizar métricas.</div>";
+    } else if (banner) {
+      banner.remove();
+    }
   }
 })(); 

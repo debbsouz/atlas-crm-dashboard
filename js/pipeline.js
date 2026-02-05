@@ -34,7 +34,15 @@
     for (var j = 0; j < items.length; j++) {
       html += cardHTML(items[j].item, items[j].index);
     }
-    container.innerHTML = html;
+    if (items.length === 0) {
+      container.innerHTML = "<div class=\"empty\">"
+        + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M4 5h16v2H4V5zm0 6h12v2H4v-2zm0 6h8v2H4v-2z\"/></svg></div>"
+        + "<div class=\"empty-title\">Nenhum item neste estágio</div>"
+        + "<div class=\"empty-subtitle\">Arraste negócios para cá quando avançarem.</div>"
+        + "</div>";
+    } else {
+      container.innerHTML = html;
+    }
     if (countEl) countEl.textContent = String(items.length);
   }
   function render() {
@@ -44,6 +52,27 @@
     renderStage("negociacao", "stage-negociacao", "negociacao");
     renderStage("fechado", "stage-fechado", "fechado");
     bindDnD();
+    renderEmptyBanner();
+  }
+  function renderEmptyBanner() {
+    var board = document.getElementById("pipeline-board");
+    if (!board) return;
+    var banner = document.getElementById("pipeline-empty");
+    var total = data.length;
+    if (total === 0) {
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "pipeline-empty";
+        banner.className = "empty";
+        banner.style.marginBottom = "12px";
+        board.parentNode.insertBefore(banner, board);
+      }
+      banner.innerHTML = "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 2l9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4z\"/></svg></div>"
+        + "<div class=\"empty-title\">Seu pipeline está vazio</div>"
+        + "<div class=\"empty-subtitle\">Cadastre clientes e defina negociações para começar.</div>";
+    } else if (banner) {
+      banner.remove();
+    }
   }
   function bindDnD() {
     var cards = document.querySelectorAll(".deal-card");

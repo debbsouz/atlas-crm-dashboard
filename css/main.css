@@ -367,6 +367,37 @@ select {
 .deal-sub { font-size: 13px; color: var(--muted); }
 .deal-amount { margin-top: 6px; font-weight: 700; color: var(--primary-600); }
 
+/* Empty states */
+.empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius);
+  color: var(--text-light);
+}
+.empty-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(59,130,246,0.12);
+  color: var(--primary-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.empty-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.empty-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* Responsividade: desktop, tablet, mobile */
 @media (max-width: 1024px) {
   .sidebar { width: 200px; }

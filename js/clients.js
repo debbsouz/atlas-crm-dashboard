@@ -30,6 +30,22 @@
     var tbody = document.querySelector("#clients-table tbody");
     if (!tbody) return;
     var view = getViewData();
+    if (clients.length === 0) {
+      tbody.innerHTML = "<tr><td colspan=\"5\"><div class=\"empty\">"
+        + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z\"/></svg></div>"
+        + "<div class=\"empty-title\">Nenhum cliente cadastrado</div>"
+        + "<div class=\"empty-subtitle\">Clique em \"Novo Cliente\" para cadastrar o primeiro.</div>"
+        + "</div></td></tr>";
+      return;
+    }
+    if (!view || view.length === 0) {
+      tbody.innerHTML = "<tr><td colspan=\"5\"><div class=\"empty\">"
+        + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z\"/></svg></div>"
+        + "<div class=\"empty-title\">Nenhum resultado encontrado</div>"
+        + "<div class=\"empty-subtitle\">Ajuste a busca ou filtros para encontrar clientes.</div>"
+        + "</div></td></tr>";
+      return;
+    }
     tbody.innerHTML = view.map(function (row) {
       var c = row.client;
       var idx = row.index;
