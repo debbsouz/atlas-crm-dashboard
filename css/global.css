@@ -119,6 +119,42 @@ body {
   z-index: 1;
 }
 .table-base tbody tr:hover { background: #f5f7fb; }
+
+/* Modal base */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 8, 23, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+.modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--card-bg);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  color: var(--text-light);
+}
+.modal-header h2 {
+  margin: 0 0 12px 0;
+  color: var(--text-light);
+}
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* Bloqueia scroll do body quando o modal está visível (CSS moderno) */
+body:has(#client-modal:not([hidden])) {
+  overflow: hidden;
+}
 /* Marca e tipografia do login */
 .brand-logo {
   display: flex;
