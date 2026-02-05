@@ -29,7 +29,10 @@
   function renderTable() {
     var tbody = document.querySelector("#clients-table tbody");
     if (!tbody) return;
-    tbody.innerHTML = clients.map(function (c, idx) {
+    var view = getViewData();
+    tbody.innerHTML = view.map(function (row) {
+      var c = row.client;
+      var idx = row.index;
       return "<tr>"
         + "<td>" + c.name + "</td>"
         + "<td>" + c.company + "</td>"
@@ -178,6 +181,14 @@
   function setupActions() {
     var newBtn = document.getElementById("new-client-btn");
     if (newBtn) newBtn.addEventListener("click", function () { openModal("create"); });
+    var search = document.getElementById("client-search");
+    var statusSel = document.getElementById("client-status-filter");
+    var closedOnlyCb = document.getElementById("client-closed-only");
+    var inactiveOnlyCb = document.getElementById("client-inactive-only");
+    if (search) search.addEventListener("input", function () { renderTable(); });
+    if (statusSel) statusSel.addEventListener("change", function () { renderTable(); });
+    if (closedOnlyCb) closedOnlyCb.addEventListener("change", function () { renderTable(); });
+    if (inactiveOnlyCb) inactiveOnlyCb.addEventListener("change", function () { renderTable(); });
     var table = document.getElementById("clients-table");
     if (table) {
       table.addEventListener("click", function (e) {
@@ -194,6 +205,51 @@
         }
       });
     }
+  }
+  function normalizeStatus(s) {
+    s = (s || "").toLowerCase();
+    if (s === "negociação") s = "negociacao";
+    return s;
+  }
+  function getViewData() {
+    var term = (document.getElementById("client-search") || {}).value || "";
+    term = term.toLowerCase().trim();
+    var statusSel = document.getElementById("client-status-filter");
+    var status = statusSel ? statusSel.value : "all";
+    var closedOnly = !!((document.getElementById("client-closed-only") || {}).checked);
+    var inactiveOnly = !!((document.getElementById("client-inactive-only") || {}).checked);
+    var now = Date.now();
+    var THRESHOLD_MS = 30 * 24 * 60 * 60 * 1000;
+    var out = [];
+    for (var i = 0; i < clients.length; i++) {
+      var c = clients[i];
+      var matchTerm = true;
+      if (term) {
+        var hay = (c.name + " " + c.company + " " + c.email).toLowerCase();
+        matchTerm = hay.indexOf(term) !== -1;
+      }
+      if (!matchTerm) continue;
+      var ns = normalizeStatus(c.status);
+      if (status && status !== "all") {
+        var target = normalizeStatus(status);
+        if (ns !== target) continue;
+      }
+      if (closedOnly && ns !== "fechado") continue;
+      if (inactiveOnly) {
+        var acts = Array.isArray(c.activities) ? c.activities : [];
+        var recent = false;
+        if (acts.length > 0) {
+          var latest = acts[0];
+          var t = Date.parse(latest.at);
+          if (!isNaN(t)) {
+            recent = (now - t) < THRESHOLD_MS;
+          }
+        }
+        if (recent) continue;
+      }
+      out.push({ client: c, index: i });
+    }
+    return out;
   }
   if (typeof AtlasState !== "undefined") {
     AtlasState.on("clients:changed", function () {

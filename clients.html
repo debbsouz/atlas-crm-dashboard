@@ -19,8 +19,23 @@
 </header>
 <main class="container">
 <h1>Clientes</h1>
-<div class="actions" style="margin: 12px 0;">
+<div class="actions actions-row">
 <button type="button" class="btn primary" id="new-client-btn">Novo Cliente</button>
+<input id="client-search" type="text" placeholder="Buscar por nome, empresa ou email">
+<select id="client-status-filter">
+<option value="all">Todos os status</option>
+<option value="lead">Lead</option>
+<option value="contato">Contato</option>
+<option value="proposta">Proposta</option>
+<option value="negociação">Negociação</option>
+<option value="fechado">Fechado</option>
+</select>
+<label>
+<input type="checkbox" id="client-closed-only"> Somente vendas fechadas
+</label>
+<label>
+<input type="checkbox" id="client-inactive-only"> Sem atividades recentes
+</label>
 </div>
 
 <!-- Lista de clientes -->

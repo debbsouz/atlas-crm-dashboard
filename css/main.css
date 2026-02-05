@@ -267,6 +267,41 @@ select {
   background: var(--surface);
 }
 
+/* Clientes: barra de ações */
+.actions {
+  margin: 12px 0 16px;
+}
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.actions-row #new-client-btn {
+  flex: 0 0 auto;
+}
+.actions-row #client-search {
+  flex: 1 1 auto;
+}
+.actions-row #client-status-filter {
+  flex: 0 0 220px;
+}
+.actions-row .btn,
+.actions-row input[type="text"],
+.actions-row select {
+  height: 40px;
+}
+.actions-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.actions-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
 /* Kanban Pipeline */
 .pipeline-board {
   display: grid;
