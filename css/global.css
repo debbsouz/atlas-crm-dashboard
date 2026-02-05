@@ -61,6 +61,64 @@ body {
   transform: translateY(-2px);
 }
 /* Tí */
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+@media (max-width: 1024px) {
+  .grid { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+@media (max-width: 768px) {
+  .grid { gap: 12px; grid-template-columns: 1fr; }
+}
+
+.metric-card {
+  background: var(--card-bg);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  color: var(--text-light);
+  transition: transform var(--transition-medium) var(--ease-out), box-shadow var(--transition-medium) var(--ease-out);
+}
+.metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.metric-title { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.metric-value { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-light); }
+.metric-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--primary-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-base {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border: 1px solid var(--divider);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table-base th, .table-base td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--divider);
+  font-size: 14px;
+  vertical-align: middle;
+  color: var(--text-light);
+}
+.table-base thead th {
+  text-align: left;
+  background: var(--header-bg);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.table-base tbody tr:hover { background: #f5f7fb; }
 /* Marca e tipografia do login */
 .brand-logo {
   display: flex;
