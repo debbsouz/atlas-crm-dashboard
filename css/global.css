@@ -1,30 +1,27 @@
 :root {
-  --bg: #0b1220;            /* background principal (dark azul) */
-  --surface: #0f172a;       /* background secundário (variação do azul) */
-  --text: #e5e7eb;          /* texto claro padrão */
-  --muted: #94a3b8;
-  --primary: #3b82f6;
-  --border: #1f2a37;
-  --success: #16a34a;
-  --warning: #f59e0b;
-  --danger: #dc2626;
-  --radius: 10px;
-  --shadow-sm: 0 1px 2px rgba(2, 8, 23, 0.4);
-  --shadow-md: 0 6px 14px rgba(2, 8, 23, 0.5);
-}
-
-/* Tema dark elegante com destaque azul */
-.theme-dark {
   --bg: #0b1220;
   --surface: #0f172a;
   --text: #e5e7eb;
   --muted: #94a3b8;
-  --primary: #3b82f6;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
   --border: #1f2a37;
+  --radius: 12px;
   --shadow-sm: 0 1px 2px rgba(2, 8, 23, 0.4);
-  --shadow-md: 0 6px 14px rgba(2, 8, 23, 0.5);
+  --shadow-md: 0 10px 30px rgba(2, 8, 23, 0.6);
+  --transition-fast: 200ms;
+  --transition-medium: 300ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Híbrido corporativo */
+  --content-bg: #f5f7fb;
+  --header-bg: #eef2f8;
+  --card-bg: #ffffff;
+  --divider: #e6eaf2;
+  --text-light: #0f172a;
 }
 
+/* Reset base */
 *,
 *::before,
 *::after {
@@ -33,158 +30,64 @@
 
 html, body {
   height: 100%;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-  background: var(--bg) !important;
-}
-
-body, h1, h2, h3, h4, h5, h6, p, ul, ol {
   margin: 0;
 }
 
-ul, ol {
-  padding: 0;
-  list-style: none;
-}
-
-img, svg, video {
-  display: block;
-  max-width: 100%;
-}
-
 body {
-  background: var(--bg) !important;
-  color: var(--text) !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
   line-height: 1.5;
 }
 
-/* Reset de fundo para elementos estruturais (evita brancos herdados) */
-header, main, aside, section, nav {
-  background: transparent;
-}
-
-h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-}
-h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-}
-h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-button {
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  cursor: pointer;
-}
-
-input, select, textarea {
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-}
-
-:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-body.auth-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-}
-
+/* Containers */
 .container {
   width: 100%;
   max-width: 420px;
   padding: 20px;
 }
 
-h1 {
-  text-align: center;
-  color: #e5e7eb;
-  margin-bottom: 24px;
-}
-
+/* Cards */
 .card {
-  background: #ffffff;
-  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 28px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn var(--transition-medium) var(--ease-out);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-label {
-  font-size: 0.85rem;
-  margin-bottom: 6px;
-  color: #374151;
-}
-
-input {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 0.95rem;
-}
-
-input:focus {
-  outline: none;
-  border-color: #6366f1;
-}
-
-.btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn.primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #ffffff;
-}
-
-.btn.primary:hover {
+.card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(99,102,241,0.4);
 }
-
-.form-message {
+/* Tí */
+/* Marca e tipografia do login */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.brand-mark {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  color: var(--primary-500);
+}
+.brand-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.brand-name {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.subtitle {
   text-align: center;
-  margin-top: 12px;
-  color: #f87171;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 16px;
 }
