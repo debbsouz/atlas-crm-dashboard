@@ -1,32 +1,20 @@
 (function () {
-  if (typeof AtlasAuth !== "undefined") {
-    AtlasAuth.requireAuth();
-  }
-  var KEY = "atlas_pipeline";
-  var defaults = [
-    { client: "Maria Souza", company: "Nexus Corp", amount: 18000, stage: "lead" },
-    { client: "João Mendes", company: "Alpha Ltda", amount: 32000, stage: "contato" },
-    { client: "Ana Ribeiro", company: "Skyline SA", amount: 54000, stage: "proposta" },
-    { client: "Carlos Lima", company: "BlueTech", amount: 27000, stage: "negociacao" },
-    { client: "Beatriz N.", company: "Orbital", amount: 95000, stage: "fechado" }
-  ];
-  var stored = localStorage.getItem(KEY);
-  var data;
-  try {
-    data = stored ? JSON.parse(stored) : defaults;
-  } catch (e) {
-    data = defaults;
-  }
-  if (!stored) {
-    localStorage.setItem(KEY, JSON.stringify(data));
+  if (typeof AtlasAuth !== "undefined") { AtlasAuth.requireAuth(); }
+  var data = (typeof AtlasState !== "undefined") ? AtlasState.getDeals() : [];
+  if (!data || data.length === 0) {
+    data = [
+      { client: "Maria Souza", company: "Nexus Corp", amount: 18000, stage: "lead" },
+      { client: "João Mendes", company: "Alpha Ltda", amount: 32000, stage: "contato" },
+      { client: "Ana Ribeiro", company: "Skyline SA", amount: 54000, stage: "proposta" },
+      { client: "Carlos Lima", company: "BlueTech", amount: 27000, stage: "negociacao" },
+      { client: "Beatriz N.", company: "Orbital", amount: 95000, stage: "fechado" }
+    ];
+    if (typeof AtlasState !== "undefined") AtlasState.setDeals(data);
   }
   function fmtBRL(n) {
     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n || 0);
   }
   var draggingIndex = null;
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
-  }
   function cardHTML(item, index) {
     return "<div class=\"deal-card\" draggable=\"true\" data-index=\"" + index + "\">"
       + "<div class=\"deal-title\">" + item.client + "</div>"
@@ -92,11 +80,18 @@
           var stage = col.getAttribute("data-stage");
           if (draggingIndex === null || !stage) return;
           data[draggingIndex].stage = stage;
-          save();
+          if (typeof AtlasState !== "undefined") AtlasState.updateDealStage(draggingIndex, stage);
+          data = (typeof AtlasState !== "undefined") ? AtlasState.getDeals() : data;
           render();
         });
       })(columns[k]);
     }
+  }
+  if (typeof AtlasState !== "undefined") {
+    AtlasState.on("deals:changed", function () {
+      data = AtlasState.getDeals();
+      render();
+    });
   }
   render();
 })(); 

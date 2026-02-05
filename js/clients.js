@@ -1,12 +1,14 @@
 (function () {
-  if (typeof AtlasAuth !== "undefined") {
-    AtlasAuth.requireAuth();
+  if (typeof AtlasAuth !== "undefined") { AtlasAuth.requireAuth(); }
+  var clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : [];
+  if (!clients || clients.length === 0) {
+    clients = [
+      { name: "Maria Souza", company: "Nexus Corp", email: "maria@nexus.com", status: "lead" },
+      { name: "Paulo Lima", company: "Alpha Ltda", email: "paulo@alpha.com.br", status: "negociação" },
+      { name: "Ana Ribeiro", company: "Skyline SA", email: "ana@skyline.com", status: "fechado" }
+    ];
+    if (typeof AtlasState !== "undefined") AtlasState.setClients(clients);
   }
-  var clients = [
-    { name: "Maria Souza", company: "Nexus Corp", email: "maria@nexus.com", status: "lead" },
-    { name: "Paulo Lima", company: "Alpha Ltda", email: "paulo@alpha.com.br", status: "negociação" },
-    { name: "Ana Ribeiro", company: "Skyline SA", email: "ana@skyline.com", status: "fechado" }
-  ];
   var editingIndex = null;
   function badgeClass(status) {
     var s = (status || "").toLowerCase();
@@ -70,9 +72,11 @@
       if (!name || !company || !email || !status) return;
       var payload = { name: name, company: company, email: email, status: status };
       if (editingIndex !== null) {
-        clients[editingIndex] = payload;
+        if (typeof AtlasState !== "undefined") { AtlasState.updateClient(editingIndex, payload); }
+        clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
       } else {
-        clients.push(payload);
+        if (typeof AtlasState !== "undefined") { AtlasState.addClient(payload); }
+        clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients.concat([payload]);
       }
       closeModal();
       renderTable();
@@ -90,12 +94,19 @@
           if (t.dataset.action === "edit") {
             openModal("edit", idx);
           } else if (t.dataset.action === "delete") {
-            clients.splice(idx, 1);
+            if (typeof AtlasState !== "undefined") { AtlasState.removeClient(idx); }
+            clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
             renderTable();
           }
         }
       });
     }
+  }
+  if (typeof AtlasState !== "undefined") {
+    AtlasState.on("clients:changed", function () {
+      clients = AtlasState.getClients();
+      renderTable();
+    });
   }
   setupModal();
   setupActions();
