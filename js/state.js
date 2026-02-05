@@ -29,6 +29,44 @@
   }
   function saveDeals() { try { localStorage.setItem(KEY_DEALS, JSON.stringify(state.deals)); } catch (e) {} }
   function saveClients() { try { localStorage.setItem(KEY_CLIENTS, JSON.stringify(state.clients)); } catch (e) {} }
+  function stageToClientStatus(stage) {
+    if (stage === "negociacao") return "negociação";
+    if (stage === "fechado") return "fechado";
+    if (stage === "proposta") return "proposta";
+    if (stage === "contato") return "contato";
+    return "lead";
+  }
+  function clientStatusToStage(status) {
+    var s = (status || "").toLowerCase();
+    if (s === "negociação" || s === "negociacao") return "negociacao";
+    if (s === "fechado" || s === "venda fechada") return "fechado";
+    if (s === "proposta" || s === "proposta enviada") return "proposta";
+    if (s.indexOf("contato") !== -1) return "contato";
+    return "lead";
+  }
+  function findClientIndexByDeal(deal) {
+    for (var i = 0; i < state.clients.length; i++) {
+      if (state.clients[i].name === deal.client && state.clients[i].company === deal.company) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  function ensureDealsFromClients() {
+    if (state.deals.length === 0 && state.clients.length > 0) {
+      for (var i = 0; i < state.clients.length; i++) {
+        var c = state.clients[i];
+        state.deals.push({
+          client: c.name,
+          company: c.company,
+          amount: c.amount || 0,
+          stage: clientStatusToStage(c.status)
+        });
+      }
+      saveDeals();
+      emit("deals:changed");
+    }
+  }
   function emit(event) {
     var arr = listeners[event] || [];
     for (var i = 0; i < arr.length; i++) {
@@ -46,17 +84,58 @@
     if (index >= 0 && index < state.deals.length) {
       state.deals[index].stage = stage;
       saveDeals();
+      var ci = findClientIndexByDeal(state.deals[index]);
+      if (ci !== -1) {
+        state.clients[ci].status = stageToClientStatus(stage);
+        saveClients();
+        emit("clients:changed");
+      }
       emit("deals:changed");
     }
   }
-  function addClient(c) { state.clients.push(c); saveClients(); emit("clients:changed"); }
+  function addClient(c) {
+    state.clients.push(c);
+    saveClients();
+    var stage = clientStatusToStage(c.status);
+    state.deals.push({ client: c.name, company: c.company, amount: c.amount || 0, stage: stage });
+    saveDeals();
+    emit("clients:changed");
+    emit("deals:changed");
+  }
   function updateClient(index, c) {
-    if (index >= 0 && index < state.clients.length) { state.clients[index] = c; saveClients(); emit("clients:changed"); }
+    if (index >= 0 && index < state.clients.length) {
+      state.clients[index] = c;
+      saveClients();
+      // sync deal
+      var name = c.name, company = c.company;
+      var stage = clientStatusToStage(c.status);
+      for (var i = 0; i < state.deals.length; i++) {
+        if (state.deals[i].client === name && state.deals[i].company === company) {
+          state.deals[i].stage = stage;
+          state.deals[i].amount = c.amount || state.deals[i].amount || 0;
+        }
+      }
+      saveDeals();
+      emit("clients:changed");
+      emit("deals:changed");
+    }
   }
   function removeClient(index) {
-    if (index >= 0 && index < state.clients.length) { state.clients.splice(index, 1); saveClients(); emit("clients:changed"); }
+    if (index >= 0 && index < state.clients.length) {
+      var removed = state.clients.splice(index, 1)[0];
+      saveClients();
+      for (var i = state.deals.length - 1; i >= 0; i--) {
+        if (state.deals[i].client === removed.name && state.deals[i].company === removed.company) {
+          state.deals.splice(i, 1);
+        }
+      }
+      saveDeals();
+      emit("clients:changed");
+      emit("deals:changed");
+    }
   }
   load();
+  ensureDealsFromClients();
   window.AtlasState = {
     on: on,
     getDeals: getDeals,
