@@ -132,12 +132,12 @@ body {
 }
 .modal {
   width: 100%;
-  max-width: 520px;
+  max-width: 640px;
   background: var(--card-bg);
   border: 1px solid var(--divider);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  padding: 20px;
+  padding: 24px;
   color: var(--text-light);
 }
 .modal-header h2 {
