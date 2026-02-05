@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas CRM - Pipeline</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="theme-dark">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">Atlas CRM</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="clients.html" class="nav-link">Clientes</a>
+        <a href="pipeline.html" class="nav-link active">Pipeline</a>
+        <a href="#" class="nav-link">Relatórios</a>
+        <a href="#" class="nav-link">Configurações</a>
+        <button type="button" class="btn" data-logout>Sair</button>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="page-header">
+        <div class="container">
+          <div class="userbar">
+            <div class="user-info">
+              <span class="user-name">Admin</span>
+            </div>
+            <div class="avatar">AD</div>
+          </div>
+        </div>
+      </header>
+      <section class="container">
+        <h1>Pipeline de Vendas</h1>
+        <div class="pipeline-board" id="pipeline-board">
+          <div class="pipeline-column" data-stage="lead">
+            <div class="pipeline-header">
+              <span class="stage-name">Lead</span>
+              <span class="stage-count" data-count="lead">0</span>
+            </div>
+            <div class="pipeline-list" id="stage-lead"></div>
+          </div>
+          <div class="pipeline-column" data-stage="contato">
+            <div class="pipeline-header">
+              <span class="stage-name">Contato Feito</span>
+              <span class="stage-count" data-count="contato">0</span>
+            </div>
+            <div class="pipeline-list" id="stage-contato"></div>
+          </div>
+          <div class="pipeline-column" data-stage="proposta">
+            <div class="pipeline-header">
+              <span class="stage-name">Proposta Enviada</span>
+              <span class="stage-count" data-count="proposta">0</span>
+            </div>
+            <div class="pipeline-list" id="stage-proposta"></div>
+          </div>
+          <div class="pipeline-column" data-stage="negociacao">
+            <div class="pipeline-header">
+              <span class="stage-name">Negociação</span>
+              <span class="stage-count" data-count="negociacao">0</span>
+            </div>
+            <div class="pipeline-list" id="stage-negociacao"></div>
+          </div>
+          <div class="pipeline-column" data-stage="fechado">
+            <div class="pipeline-header">
+              <span class="stage-name">Venda Fechada</span>
+              <span class="stage-count" data-count="fechado">0</span>
+            </div>
+            <div class="pipeline-list" id="stage-fechado"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/pipeline.js"></script>
+</body>
+</html>
