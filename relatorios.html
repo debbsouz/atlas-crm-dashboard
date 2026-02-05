@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas CRM - Relatórios</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="theme-dark">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">Atlas CRM</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="clients.html" class="nav-link">Clientes</a>
+        <a href="pipeline.html" class="nav-link">Pipeline</a>
+        <a href="relatorios.html" class="nav-link active">Relatórios</a>
+        <a href="#" class="nav-link">Configurações</a>
+        <button type="button" class="btn" data-logout>Sair</button>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="page-header">
+        <div class="container">
+          <div class="userbar">
+            <div class="user-info">
+              <span class="user-name">Admin</span>
+            </div>
+            <div class="avatar">AD</div>
+          </div>
+        </div>
+      </header>
+      <section class="container">
+        <h1>Relatórios</h1>
+        <div class="cards" style="margin-bottom: 16px;">
+          <div class="card">
+            <div class="card-title">Total de negócios</div>
+            <div class="card-value" data-kpi="totalDeals">0</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Taxa de conversão</div>
+            <div class="card-value" data-kpi="conversionRate">0%</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Receita total</div>
+            <div class="card-value" data-kpi="totalRevenue">R$ 0</div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">Funil por estágio</div>
+            <canvas id="funnelStageChart" height="200"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-title">Receita por estágio</div>
+            <canvas id="revenueStageChart" height="200"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/relatorios.js"></script>
+</body>
+</html>

@@ -205,6 +205,18 @@
     if (statusSel) statusSel.addEventListener("change", function () { renderTable(); });
     if (closedOnlyCb) closedOnlyCb.addEventListener("change", function () { renderTable(); });
     if (inactiveOnlyCb) inactiveOnlyCb.addEventListener("change", function () { renderTable(); });
+    var importBtn = document.getElementById("import-csv-btn");
+    var exportBtn = document.getElementById("export-csv-btn");
+    var importInput = document.getElementById("client-import-file");
+    if (exportBtn) exportBtn.addEventListener("click", function () { exportCSV(); });
+    if (importBtn && importInput) {
+      importBtn.addEventListener("click", function () { importInput.click(); });
+      importInput.addEventListener("change", function () {
+        var f = importInput.files && importInput.files[0];
+        if (f) importCSV(f);
+        importInput.value = "";
+      });
+    }
     var table = document.getElementById("clients-table");
     if (table) {
       table.addEventListener("click", function (e) {
@@ -221,6 +233,112 @@
         }
       });
     }
+  }
+  function showFeedback(text, ok) {
+    var el = document.getElementById("clients-feedback");
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove("success", "error");
+    el.classList.add(ok ? "success" : "error");
+    setTimeout(function () { el.textContent = ""; el.classList.remove("success", "error"); }, 3000);
+  }
+  function escapeCSV(v) {
+    var s = String(v == null ? "" : v);
+    s = s.replace(/"/g, '""');
+    return '"' + s + '"';
+  }
+  function exportCSV() {
+    var view = getViewData();
+    var rows = [["nome","empresa","email","status","valor"]];
+    for (var i = 0; i < view.length; i++) {
+      var c = view[i].client;
+      rows.push([c.name || "", c.company || "", c.email || "", c.status || "", c.amount != null ? String(c.amount) : ""]);
+    }
+    var csv = "";
+    for (var r = 0; r < rows.length; r++) {
+      var line = [];
+      for (var k = 0; k < rows[r].length; k++) line.push(escapeCSV(rows[r][k]));
+      csv += line.join(",") + "\r\n";
+    }
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "clientes-atlas.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showFeedback("Exportado " + view.length + " registros", true);
+  }
+  function parseCSV(text) {
+    var rows = [];
+    var i = 0, field = "", inQuotes = false, row = [];
+    while (i < text.length) {
+      var ch = text[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else { inQuotes = false; }
+        } else {
+          field += ch;
+        }
+      } else {
+        if (ch === '"') { inQuotes = true; }
+        else if (ch === ',') { row.push(field); field = ""; }
+        else if (ch === '\n' || ch === '\r') {
+          if (ch === '\r' && text[i + 1] === '\n') i++;
+          row.push(field); field = "";
+          if (row.length > 0 && row.some(function (x) { return x !== ""; })) rows.push(row);
+          row = [];
+        } else {
+          field += ch;
+        }
+      }
+      i++;
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+  function parseCurrency(s) {
+    if (s == null) return undefined;
+    var t = String(s).replace(/[^\d,.-]/g, "");
+    if (t.indexOf(",") !== -1 && t.indexOf(".") === -1) t = t.replace(",", ".");
+    var n = parseFloat(t);
+    return isNaN(n) ? undefined : n;
+  }
+  function importCSV(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result || "");
+      var rows = parseCSV(text);
+      if (!rows || rows.length === 0) { showFeedback("Arquivo vazio", false); return; }
+      var header = rows[0].map(function (h) { return h.toLowerCase().trim(); });
+      var nameIdx = header.indexOf("nome");
+      var emailIdx = header.indexOf("email");
+      var companyIdx = header.indexOf("empresa");
+      var statusIdx = header.indexOf("status");
+      var amountIdx = header.indexOf("valor");
+      var added = 0, invalid = 0;
+      for (var r = 1; r < rows.length; r++) {
+        var row = rows[r];
+        var name = row[nameIdx] || "";
+        var email = row[emailIdx] || "";
+        var company = row[companyIdx] || "";
+        var status = row[statusIdx] || "lead";
+        var amount = parseCurrency(row[amountIdx]);
+        if (!name.trim() || !email.trim()) { invalid++; continue; }
+        var payload = { name: name.trim(), company: company.trim(), email: email.trim(), status: status.trim() };
+        if (amount != null) payload.amount = amount;
+        if (typeof AtlasState !== "undefined") { AtlasState.addClient(payload); }
+        added++;
+      }
+      clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : clients;
+      renderTable();
+      showFeedback("Importados " + added + " registros" + (invalid ? (" • inválidos " + invalid) : ""), added > 0);
+    };
+    reader.onerror = function () { showFeedback("Erro ao ler arquivo", false); };
+    reader.readAsText(file, "utf-8");
   }
   function normalizeStatus(s) {
     s = (s || "").toLowerCase();
