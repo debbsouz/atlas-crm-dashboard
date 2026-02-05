@@ -12,7 +12,7 @@ body {
 }
 .container {
   max-width: 960px;
-  margin: 0 auto;
+  margin: 0;
   padding: 24px;
 }
 .layout {
@@ -55,6 +55,8 @@ body {
   margin-left: 240px;
   width: 100%;
   background: var(--content-bg);
+  padding-left: 24px;
+  padding-right: 24px;
 }
 .page-header {
   background: var(--header-bg);
