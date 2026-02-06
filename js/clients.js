@@ -30,6 +30,11 @@
     var tbody = document.querySelector("#clients-table tbody");
     if (!tbody) return;
     var view = getViewData();
+    var countEl = document.getElementById("clients-count");
+    if (countEl) {
+      var total = view ? view.length : 0;
+      countEl.textContent = total + (total === 1 ? " resultado" : " resultados");
+    }
     if (clients.length === 0) {
       tbody.innerHTML = "<tr><td colspan=\"5\"><div class=\"empty\">"
         + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z\"/></svg></div>"
@@ -100,8 +105,8 @@
       historyHost.innerHTML = "";
     }
     if (backdrop) {
+      backdrop.classList.add("is-open");
       backdrop.hidden = false;
-      backdrop.style.display = "grid";
     }
   }
   function closeModal() {
@@ -109,6 +114,7 @@
     var form = document.getElementById("modal-form");
     if (backdrop) {
       if (form && typeof form.reset === "function") { form.reset(); }
+      backdrop.classList.remove("is-open");
       backdrop.hidden = true;
       clearForm();
       editingIndex = null;
@@ -126,8 +132,8 @@
     editingIndex = null;
     modalMode = "create";
     if (backdrop) {
+      backdrop.classList.remove("is-open");
       backdrop.hidden = true;
-      backdrop.style.display = "none";
     }
     if (list) {
       list.style.removeProperty("display");
@@ -196,7 +202,10 @@
       for (var i = 0; i < items.length; i++) {
         var it = items[i];
         var dt = new Date(it.at);
-        var when = dt.toLocaleString('pt-BR', { hour12: false });
+        var prefs = {};
+        try { prefs = JSON.parse(localStorage.getItem("atlas_prefs") || "{}"); } catch (e) {}
+        var locale = (prefs.dateFormat === "MM/DD/YYYY") ? "en-US" : "pt-BR";
+        var when = dt.toLocaleString(locale, { hour12: false });
         html += "<div class=\"deal-card\">"
           + "<div class=\"deal-title\">" + it.description + "</div>"
           + "<div class=\"deal-sub\">Tipo: " + it.type + " • " + when + "</div>"

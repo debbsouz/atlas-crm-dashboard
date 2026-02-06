@@ -62,6 +62,7 @@
     modal.appendChild(body);
     modal.appendChild(actions);
     backdrop.appendChild(modal);
+    backdrop.classList.add("is-open");
     document.body.appendChild(backdrop);
     function cleanup() { if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop); }
     cancel.addEventListener("click", function () { cleanup(); if (typeof onCancel === "function") onCancel(); });

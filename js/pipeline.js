@@ -11,15 +11,21 @@
     ];
     if (typeof AtlasState !== "undefined") AtlasState.setDeals(data);
   }
-  function fmtBRL(n) {
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n || 0);
+  function getPrefs() {
+    try { return JSON.parse(localStorage.getItem("atlas_prefs") || "{}"); } catch (e) { return {}; }
+  }
+  function fmtCurrency(n) {
+    var p = getPrefs();
+    var cur = p.currency || "BRL";
+    var locale = cur === "USD" ? "en-US" : (cur === "EUR" ? "de-DE" : "pt-BR");
+    return new Intl.NumberFormat(locale, { style: "currency", currency: cur }).format(n || 0);
   }
   var draggingIndex = null;
   function cardHTML(item, index) {
     return "<div class=\"deal-card\" draggable=\"true\" data-index=\"" + index + "\">"
       + "<div class=\"deal-title\">" + item.client + "</div>"
       + "<div class=\"deal-sub\">" + item.company + "</div>"
-      + "<div class=\"deal-amount\">" + fmtBRL(item.amount) + "</div>"
+      + "<div class=\"deal-amount\">" + fmtCurrency(item.amount) + "</div>"
       + "</div>";
   }
   function renderStage(stage, containerId, countSel) {

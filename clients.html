@@ -4,49 +4,68 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Atlas CRM - Clientes</title>
+<script>(function(){try{var t=localStorage.getItem("atlas_theme")||"light";if(t==='hybrid')t='light';document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 <header class="topbar">
 <nav class="nav">
-<span class="brand">Atlas CRM</span>
-<a href="dashboard.html" class="nav-link">Dashboard</a>
-<a href="clients.html" class="nav-link active">Clientes</a>
-<a href="pipeline.html" class="nav-link">Pipeline</a>
-<a href="relatorios.html" class="nav-link">Relatórios</a>
-<button type="button" class="btn" data-logout>Sair</button>
+  <div class="nav-left">
+    <span class="brand">Atlas CRM</span>
+  </div>
+  <div class="nav-center">
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="clients.html" class="nav-link active">Clientes</a>
+    <a href="pipeline.html" class="nav-link">Pipeline</a>
+    <a href="relatorios.html" class="nav-link">Relatórios</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Alternar tema"><span class="icon"></span></button>
+    <button type="button" class="btn" data-logout>Sair</button>
+  </div>
 </nav>
 </header>
 <main class="container">
-<h1>Clientes</h1>
-<div class="actions actions-row">
-<button type="button" class="btn primary" id="new-client-btn">Novo Cliente</button>
-<input id="client-search" type="text" placeholder="Buscar por nome, empresa ou email">
-<select id="client-status-filter">
-<option value="all">Todos os status</option>
-<option value="lead">Lead</option>
-<option value="contato">Contato</option>
-<option value="proposta">Proposta</option>
-<option value="negociação">Negociação</option>
-<option value="fechado">Fechado</option>
-</select>
-<label>
-<input type="checkbox" id="client-closed-only"> Somente vendas fechadas
-</label>
-<label>
-<input type="checkbox" id="client-inactive-only"> Sem atividades recentes
-</label>
-<div class="actions-right">
-  <div id="clients-feedback" class="feedback" aria-live="polite"></div>
-  <input type="file" id="client-import-file" accept=".csv" hidden>
-  <button type="button" class="btn" id="import-csv-btn">Importar CSV</button>
-  <button type="button" class="btn" id="export-csv-btn">Exportar CSV</button>
-</div>
+<div class="page-content-header">
+  <div class="title-group">
+    <h1>Clientes</h1>
+    <p class="subtitle text-muted">Gerencie clientes e acompanhe status do funil</p>
+    <div id="clients-feedback" class="feedback" aria-live="polite"></div>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn primary" id="new-client-btn">Novo Cliente</button>
+    <input type="file" id="client-import-file" accept=".csv" hidden>
+    <button type="button" class="btn" id="import-csv-btn">Importar CSV</button>
+    <button type="button" class="btn" id="export-csv-btn">Exportar CSV</button>
+  </div>
 </div>
 
-<!-- Lista de clientes -->
-<table id="clients-table" class="table-base">
+<div class="card filters-card">
+  <div class="card-title">Filtros</div>
+  <div class="filters-grid">
+    <input id="client-search" type="text" class="filter-input wide" placeholder="Buscar por nome, empresa ou email">
+    <select id="client-status-filter" class="filter-select">
+      <option value="all">Todos os status</option>
+      <option value="lead">Lead</option>
+      <option value="contato">Contato</option>
+      <option value="proposta">Proposta</option>
+      <option value="negociação">Negociação</option>
+      <option value="fechado">Fechado</option>
+    </select>
+    <div class="filters-checks">
+      <label><input type="checkbox" id="client-closed-only"> Somente vendas fechadas</label>
+      <label><input type="checkbox" id="client-inactive-only"> Sem atividades recentes</label>
+    </div>
+  </div>
+</div>
+
+<div class="card table-card">
+<div class="card-header">
+  <div class="card-header-title">Lista de clientes</div>
+  <div class="card-header-meta"><span id="clients-count">Resultados</span></div>
+</div>
+<table id="clients-table" class="table">
 <thead>
 <tr>
 <th>Nome</th>
@@ -58,6 +77,7 @@
 </thead>
 <tbody></tbody>
 </table>
+</div>
 </main>
 
 <div class="modal-backdrop" id="client-modal" hidden>
@@ -94,6 +114,7 @@
 </div>
 </main>
 <script src="js/state.js"></script>
+<script src="js/app.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/clients.js"></script>
 </body>

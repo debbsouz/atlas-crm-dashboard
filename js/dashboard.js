@@ -1,6 +1,14 @@
 (function () {
   if (typeof AtlasAuth !== "undefined") { AtlasAuth.requireAuth(); }
-  function fmtBRL(n) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n || 0); }
+  function getPrefs() {
+    try { return JSON.parse(localStorage.getItem("atlas_prefs") || "{}"); } catch (e) { return {}; }
+  }
+  function fmtCurrency(n) {
+    var p = getPrefs();
+    var cur = p.currency || "BRL";
+    var locale = cur === "USD" ? "en-US" : (cur === "EUR" ? "de-DE" : "pt-BR");
+    return new Intl.NumberFormat(locale, { style: "currency", currency: cur }).format(n || 0);
+  }
   function compute() {
     var clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : [];
     var deals = (typeof AtlasState !== "undefined") ? AtlasState.getDeals() : [];
@@ -14,7 +22,10 @@
     setMetric("clients", totalClients);
     setMetric("leads", totalLeads);
     setMetric("sales", totalSales);
-    setMetric("revenue", fmtBRL(revenue));
+    var prefs = getPrefs();
+    var goal = prefs.goal || 0;
+    var revenueText = fmtCurrency(revenue) + (goal ? (" / Meta " + fmtCurrency(goal)) : "");
+    setMetric("revenue", revenueText);
     renderEmptyBanner(totalClients, deals.length);
   }
   function setMetric(name, value) {

@@ -7,7 +7,15 @@
     border: ["#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8", "#1e40af"]
   };
   var funnelChart, revenueChart;
-  function fmtBRL(n) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n || 0); }
+  function getPrefs() {
+    try { return JSON.parse(localStorage.getItem("atlas_prefs") || "{}"); } catch (e) { return {}; }
+  }
+  function fmtCurrency(n) {
+    var p = getPrefs();
+    var cur = p.currency || "BRL";
+    var locale = cur === "USD" ? "en-US" : (cur === "EUR" ? "de-DE" : "pt-BR");
+    return new Intl.NumberFormat(locale, { style: "currency", currency: cur }).format(n || 0);
+  }
   function compute() {
     var deals = (typeof AtlasState !== "undefined") ? AtlasState.getDeals() : [];
     var counts = [0,0,0,0,0];
@@ -27,7 +35,7 @@
     var rate = totalDeals ? Math.round((closed / totalDeals) * 100) : 0;
     setKPI("totalDeals", totalDeals);
     setKPI("conversionRate", rate + "%");
-    setKPI("totalRevenue", fmtBRL(totalRevenue));
+    setKPI("totalRevenue", fmtCurrency(totalRevenue));
     updateCharts(counts, revenue);
   }
   function setKPI(name, value) {
@@ -50,8 +58,8 @@
     if (rctx && !revenueChart) {
       revenueChart = new Chart(rctx, {
         type: "bar",
-        data: { labels: labels, datasets: [{ label: "Receita (R$)", data: revenue, backgroundColor: colors.bg, borderColor: colors.border, borderWidth: 1 }] },
-        options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { tooltip: { callbacks: { label: function (ctx) { return "Receita: " + fmtBRL(ctx.parsed.y); } } } } }
+        data: { labels: labels, datasets: [{ label: "Receita", data: revenue, backgroundColor: colors.bg, borderColor: colors.border, borderWidth: 1 }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { tooltip: { callbacks: { label: function (ctx) { return "Receita: " + fmtCurrency(ctx.parsed.y); } } } } }
       });
     } else if (revenueChart) {
       revenueChart.data.datasets[0].data = revenue;

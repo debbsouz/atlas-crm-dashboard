@@ -4,25 +4,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Atlas CRM - Pipeline</title>
+  <script>(function(){try{var t=localStorage.getItem("atlas_theme")||"light";if(t==='hybrid')t='light';document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/main.css">
 </head>
-<body class="theme-dark">
+<body>
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">Atlas CRM</div>
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="clients.html" class="nav-link">Clientes</a>
-        <a href="pipeline.html" class="nav-link active">Pipeline</a>
-        <a href="relatorios.html" class="nav-link">Relatórios</a>
-        <a href="#" class="nav-link">Configurações</a>
+        <a href="dashboard.html" class="nav-link"><span class="item"><span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg></span><span class="label">Dashboard</span></span></a>
+        <a href="clients.html" class="nav-link"><span class="item"><span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.67 0-8 1.34-8 4v2h12v-2c0-2.66-5.33-4-8-4zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h8v-2c0-2.66-5.33-4-8-4z"/></svg></span><span class="label">Clientes</span></span></a>
+        <a href="pipeline.html" class="nav-link active"><span class="item"><span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 4h18v2H3V4zm0 6h12v2H3v-2zm0 6h8v2H3v-2z"/></svg></span><span class="label">Pipeline</span></span></a>
+        <a href="relatorios.html" class="nav-link"><span class="item"><span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 13h4v8H3v-8zm6-6h4v14H9V7zm6 3h4v11h-4V10z"/></svg></span><span class="label">Relatórios</span></span></a>
+        <a href="configuracoes.html" class="nav-link"><span class="item"><span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.6-.22l-2.39.96a7.03 7.03 0 00-1.63-.94l-.36-2.54a.5.5 0 00-.5-.42h-3.84a.5.5 0 00-.5.42l-.36 2.54c-.6.24-1.16.55-1.68.94l-2.39-.96a.5.5 0 00-.6.22L2.7 7.84a.5.5 0 00.12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.82 13.52a.5.5 0 00-.12.64l1.92 3.32c.14.24.42.34.68.22l2.39-.96c.52.39 1.08.7 1.68.94l.36 2.54a.5.5 0 00.5.42h3.84a.5.5 0 00.5-.42l.36-2.54c.6-.24 1.16-.55 1.68-.94l2.39.96c.26.12.54.02.68-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z"/></svg></span><span class="label">Configurações</span></span></a>
+        <div class="sidebar-divider"></div>
         <button type="button" class="btn" data-logout>Sair</button>
       </nav>
+      <div class="sidebar-footer">
+        <div class="metric-title">Negócios ativos</div>
+        <div class="metric-value" data-sidebar-metric>0 ativos</div>
+      </div>
     </aside>
     <main class="main">
       <header class="page-header">
         <div class="container">
+          <div class="theme-left">
+            <button type="button" class="theme-toggle" data-theme-toggle aria-label="Alternar tema"><span class="icon"></span></button>
+            <span class="theme-label">Tema</span>
+          </div>
           <div class="userbar">
             <div class="user-info">
               <span class="user-name">Admin</span>
@@ -75,6 +85,7 @@
   </div>
   <script src="js/auth.js"></script>
   <script src="js/state.js"></script>
+  <script src="js/app.js"></script>
   <script src="js/pipeline.js"></script>
 </body>
 </html>
