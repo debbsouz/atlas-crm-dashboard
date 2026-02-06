@@ -89,5 +89,11 @@
       }
     }
   }
-  window.UI = { setButtonLoading: setButtonLoading };
+  function isValidEmail(email) {
+    var s = String(email || "").trim();
+    if (!s) return false;
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    return re.test(s);
+  }
+  window.UI = { setButtonLoading: setButtonLoading, isValidEmail: isValidEmail };
 })(); 

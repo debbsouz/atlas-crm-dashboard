@@ -29,18 +29,47 @@
   function renderTable() {
     var tbody = document.querySelector("#clients-table tbody");
     if (!tbody) return;
+    var presentation = (window.AtlasApp && typeof AtlasApp.isPresentationMode === "function") ? AtlasApp.isPresentationMode() : (localStorage.getItem("atlas_presentation_mode") === "true");
     var view = getViewData();
     var countEl = document.getElementById("clients-count");
     if (countEl) {
       var total = view ? view.length : 0;
-      countEl.textContent = total + (total === 1 ? " resultado" : " resultados");
+      countEl.textContent = (presentation ? "0 resultados" : (total + (total === 1 ? " resultado" : " resultados")));
+    }
+    if (presentation) {
+      tbody.innerHTML = "<tr><td colspan=\"5\"><div class=\"empty\">"
+        + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 2l9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4z\"/></svg></div>"
+        + "<div class=\"empty-title\">Nenhum cliente ainda</div>"
+        + "<div class=\"empty-subtitle\">Dados aparecerão quando você cadastrar seu primeiro cliente.</div>"
+        + "<div class=\"empty-actions\" style=\"margin-top:10px;\">"
+        + "<button type=\"button\" class=\"btn primary\" id=\"empty-add-client\">Adicionar primeiro cliente</button>"
+        + "</div>"
+        + "</div></td></tr>";
+      var tableHost = document.getElementById("clients-table");
+      if (tableHost) {
+        tableHost.addEventListener("click", function (e) {
+          var t = e.target;
+          if (t && t.id === "empty-add-client") { openModal("create"); }
+        }, { once: true });
+      }
+      return;
     }
     if (clients.length === 0) {
       tbody.innerHTML = "<tr><td colspan=\"5\"><div class=\"empty\">"
         + "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z\"/></svg></div>"
         + "<div class=\"empty-title\">Nenhum cliente cadastrado</div>"
-        + "<div class=\"empty-subtitle\">Clique em \"Novo Cliente\" para cadastrar o primeiro.</div>"
+        + "<div class=\"empty-subtitle\">Adicione seu primeiro cliente para começar.</div>"
+        + "<div class=\"empty-actions\" style=\"margin-top:10px;\">"
+        + "<button type=\"button\" class=\"btn primary\" id=\"empty-add-client\">Adicionar cliente</button>"
+        + "</div>"
         + "</div></td></tr>";
+      var tableHost = document.getElementById("clients-table");
+      if (tableHost) {
+        tableHost.addEventListener("click", function (e) {
+          var t = e.target;
+          if (t && t.id === "empty-add-client") { openModal("create"); }
+        }, { once: true });
+      }
       return;
     }
     if (!view || view.length === 0) {
@@ -174,6 +203,11 @@
       var status = document.getElementById("m-status").value;
       if (!name || !company || !email || !status) {
         if (window.Toast) Toast.show("error", "Preencha todos os campos");
+        if (saveBtn && window.UI) { saveBtn.textContent = "Salvar"; UI.setButtonLoading(saveBtn, false); }
+        return;
+      }
+      if (window.UI && !UI.isValidEmail(email)) {
+        if (window.Toast) Toast.show("error", "Email inválido");
         if (saveBtn && window.UI) { saveBtn.textContent = "Salvar"; UI.setButtonLoading(saveBtn, false); }
         return;
       }
@@ -443,6 +477,7 @@
       if (editingIndex !== null) { renderHistory(editingIndex); }
     });
   }
+  window.addEventListener("atlas:presentation-mode", function () { renderTable(); });
   setupModal();
   setupActions();
   renderTable();

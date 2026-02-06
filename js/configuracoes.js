@@ -14,6 +14,7 @@
     var name = document.getElementById("profile-name").value.trim();
     var email = document.getElementById("profile-email").value.trim();
     if (!name || !email) { if (window.Toast) Toast.show("error", "Preencha nome e email"); return; }
+    if (window.UI && !UI.isValidEmail(email)) { if (window.Toast) Toast.show("error", "Email inválido"); return; }
     var p = { name: name, email: email };
     try { localStorage.setItem("atlas_profile", JSON.stringify(p)); } catch (e) {}
     if (window.AtlasApp) AtlasApp.applyProfile(p);

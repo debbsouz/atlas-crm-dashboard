@@ -32,9 +32,15 @@
     var container = document.getElementById(containerId);
     var countEl = document.querySelector('[data-count="' + countSel + '"]');
     if (!container) return;
+    var presentation = (window.AtlasApp && typeof AtlasApp.isPresentationMode === "function") ? AtlasApp.isPresentationMode() : (localStorage.getItem("atlas_presentation_mode") === "true");
     var items = [];
     for (var i = 0; i < data.length; i++) {
       if (data[i].stage === stage) items.push({ item: data[i], index: i });
+    }
+    if (presentation) {
+      container.innerHTML = "";
+      if (countEl) countEl.textContent = "0";
+      return;
     }
     var html = "";
     for (var j = 0; j < items.length; j++) {
@@ -64,8 +70,9 @@
     var board = document.getElementById("pipeline-board");
     if (!board) return;
     var banner = document.getElementById("pipeline-empty");
+    var presentation = (window.AtlasApp && typeof AtlasApp.isPresentationMode === "function") ? AtlasApp.isPresentationMode() : (localStorage.getItem("atlas_presentation_mode") === "true");
     var total = data.length;
-    if (total === 0) {
+    if (presentation || total === 0) {
       if (!banner) {
         banner = document.createElement("div");
         banner.id = "pipeline-empty";
@@ -73,9 +80,16 @@
         banner.style.marginBottom = "12px";
         board.parentNode.insertBefore(banner, board);
       }
-      banner.innerHTML = "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 2l9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4z\"/></svg></div>"
-        + "<div class=\"empty-title\">Seu pipeline está vazio</div>"
-        + "<div class=\"empty-subtitle\">Cadastre clientes e defina negociações para começar.</div>";
+      banner.innerHTML = "<div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 2l9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4z\"/></svg></div>"
+        + "<div class=\"empty-title\">Nenhum negócio no pipeline ainda</div>"
+        + "<div class=\"empty-subtitle\">Dados aparecerão quando você cadastrar clientes e negócios.</div>"
+        + "<div class=\"empty-actions\" style=\"margin-top:10px;\">"
+        + "<button type=\"button\" class=\"btn primary\" id=\"pipeline-create-first\">Criar primeiro negócio</button>"
+        + "</div>";
+      banner.addEventListener("click", function (e) {
+        var t = e.target;
+        if (t && t.id === "pipeline-create-first") { window.location.href = "clients.html"; }
+      }, { once: true });
     } else if (banner) {
       banner.remove();
     }
@@ -128,5 +142,6 @@
       render();
     });
   }
+  window.addEventListener("atlas:presentation-mode", function () { render(); });
   render();
 })(); 

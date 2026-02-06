@@ -10,14 +10,17 @@
     return new Intl.NumberFormat(locale, { style: "currency", currency: cur }).format(n || 0);
   }
   function compute() {
+    var presentation = (window.AtlasApp && typeof AtlasApp.isPresentationMode === "function") ? AtlasApp.isPresentationMode() : (localStorage.getItem("atlas_presentation_mode") === "true");
     var clients = (typeof AtlasState !== "undefined") ? AtlasState.getClients() : [];
     var deals = (typeof AtlasState !== "undefined") ? AtlasState.getDeals() : [];
-    var totalClients = clients.length;
+    var totalClients = presentation ? 0 : clients.length;
     var totalLeads = 0, totalSales = 0, revenue = 0;
-    for (var i = 0; i < deals.length; i++) {
-      var st = deals[i].stage;
-      if (st === "lead") totalLeads++;
-      if (st === "fechado") { totalSales++; revenue += (deals[i].amount || 0); }
+    if (!presentation) {
+      for (var i = 0; i < deals.length; i++) {
+        var st = deals[i].stage;
+        if (st === "lead") totalLeads++;
+        if (st === "fechado") { totalSales++; revenue += (deals[i].amount || 0); }
+      }
     }
     setMetric("clients", totalClients);
     setMetric("leads", totalLeads);
@@ -26,7 +29,7 @@
     var goal = prefs.goal || 0;
     var revenueText = fmtCurrency(revenue) + (goal ? (" / Meta " + fmtCurrency(goal)) : "");
     setMetric("revenue", revenueText);
-    renderEmptyBanner(totalClients, deals.length);
+    renderEmptyBanner(totalClients, presentation ? 0 : deals.length);
   }
   function setMetric(name, value) {
     var el = document.querySelector('[data-metric="' + name + '"]');
@@ -37,6 +40,7 @@
     AtlasState.on("deals:changed", compute);
     AtlasState.on("clients:changed", compute);
   }
+  window.addEventListener("atlas:presentation-mode", compute);
   function renderEmptyBanner(tc, td) {
     var section = document.querySelector("section.container");
     if (!section) return;

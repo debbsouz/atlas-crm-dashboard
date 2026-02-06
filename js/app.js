@@ -66,6 +66,34 @@
     });
     applyTheme();
   }
+  function isPresentationMode() {
+    return localStorage.getItem("atlas_presentation_mode") === "true";
+  }
+  function updatePresentationToggleUI() {
+    var on = isPresentationMode();
+    var els = document.querySelectorAll("[data-presentation-toggle]");
+    els.forEach(function (btn) {
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.classList.toggle("active", on);
+    });
+  }
+  function setPresentationMode(on) {
+    try { localStorage.setItem("atlas_presentation_mode", on ? "true" : "false"); } catch (e) {}
+    updatePresentationToggleUI();
+    try {
+      var ev = new CustomEvent("atlas:presentation-mode", { detail: { enabled: on } });
+      window.dispatchEvent(ev);
+    } catch (e) {}
+  }
+  function initPresentationToggle() {
+    var els = document.querySelectorAll("[data-presentation-toggle]");
+    els.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setPresentationMode(!isPresentationMode());
+      });
+    });
+    updatePresentationToggleUI();
+  }
   function applySidebarInfo() {
     var el = document.querySelector(".sidebar-footer [data-sidebar-metric]");
     if (!el) return;
@@ -79,10 +107,11 @@
   }
   loadProfile();
   initThemeToggle();
+  initPresentationToggle();
   applyRole();
   applySidebarInfo();
   if (typeof AtlasState !== "undefined" && typeof AtlasState.on === "function") {
     AtlasState.on("deals:changed", applySidebarInfo);
   }
-  window.AtlasApp = { applyProfile: applyProfile, applyRole: applyRole, applyTheme: applyTheme, toggleTheme: toggleTheme, applySidebarInfo: applySidebarInfo };
+  window.AtlasApp = { applyProfile: applyProfile, applyRole: applyRole, applyTheme: applyTheme, toggleTheme: toggleTheme, applySidebarInfo: applySidebarInfo, isPresentationMode: isPresentationMode, setPresentationMode: setPresentationMode };
 })(); 
