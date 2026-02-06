@@ -762,3 +762,14 @@ select {
   }
   .sidebar-footer { display: none; }
 }
+/* Sidebar fixa em azul escuro institucional (independente do tema) */
+.layout .sidebar { background: #1a2338 !important; border-right-color: #24314a !important; }
+.layout .sidebar .brand { color: #e6e8ee !important; }
+.layout .sidebar-nav .nav-link { color: #a9b4c8 !important; }
+.layout .sidebar-nav .nav-link:hover { background: rgba(37,99,235,0.12) !important; }
+.layout .sidebar-nav .nav-link.active { background: rgba(37,99,235,0.28) !important; color: #ffffff !important; }
+.layout .sidebar-nav .nav-link .icon { color: #a9b4c8 !important; }
+.layout .sidebar-nav .nav-link.active .icon { color: #60a5fa !important; }
+.layout .sidebar-divider { background: #24314a !important; }
+.layout .sidebar-footer .metric-title { color: #a9b4c8 !important; }
+.layout .sidebar-footer .metric-value { color: #e6e8ee !important; }
