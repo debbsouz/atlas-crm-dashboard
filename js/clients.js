@@ -167,12 +167,16 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var saveBtn = document.getElementById("modal-save");
-      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Salvando…"; }
+      if (saveBtn && window.UI) UI.setButtonLoading(saveBtn, true, "Salvando…");
       var name = document.getElementById("m-name").value.trim();
       var company = document.getElementById("m-company").value.trim();
       var email = document.getElementById("m-email").value.trim();
       var status = document.getElementById("m-status").value;
-      if (!name || !company || !email || !status) return;
+      if (!name || !company || !email || !status) {
+        if (window.Toast) Toast.show("error", "Preencha todos os campos");
+        if (saveBtn && window.UI) { saveBtn.textContent = "Salvar"; UI.setButtonLoading(saveBtn, false); }
+        return;
+      }
       var payload = { name: name, company: company, email: email, status: status };
       if (editingIndex !== null) {
         if (typeof AtlasState !== "undefined") { AtlasState.updateClient(editingIndex, payload); }
@@ -185,7 +189,7 @@
       }
       closeModal();
       renderTable();
-      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Salvar"; }
+      if (saveBtn && window.UI) { saveBtn.textContent = "Salvar"; UI.setButtonLoading(saveBtn, false); }
     });
   }
   function renderHistory(index) {

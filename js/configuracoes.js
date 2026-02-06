@@ -31,7 +31,9 @@
   }
   function savePreferences() {
     var cur = document.getElementById("pref-currency").value;
-    var goal = parseFloat(document.getElementById("pref-goal").value) || 0;
+    var goalRaw = document.getElementById("pref-goal").value;
+    var goal = parseFloat(goalRaw);
+    if (isNaN(goal) || goal < 0) { if (window.Toast) Toast.show("error", "Meta mensal inválida"); return; }
     var date = document.getElementById("pref-date").value;
     var prefs = { currency: cur, goal: goal, dateFormat: date };
     try { localStorage.setItem("atlas_prefs", JSON.stringify(prefs)); } catch (e) {}
@@ -197,9 +199,9 @@
     try { localStorage.setItem("atlas_rules", JSON.stringify(r)); } catch (e) {}
     if (window.Toast) Toast.show("success", "Regras salvas");
   }
-  document.getElementById("profile-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("profile-save"); if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; } saveProfile(); if (btn) { btn.disabled = false; btn.textContent = "Salvar"; } });
-  document.getElementById("prefs-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("prefs-save"); if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; } savePreferences(); if (btn) { btn.disabled = false; btn.textContent = "Salvar preferências"; } });
-  document.getElementById("role-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("role-save"); if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; } saveRole(); if (btn) { btn.disabled = false; btn.textContent = "Salvar acesso"; } });
+  document.getElementById("profile-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("profile-save"); if (btn && window.UI) UI.setButtonLoading(btn, true, "Salvando…"); saveProfile(); if (btn && window.UI) UI.setButtonLoading(btn, false); });
+  document.getElementById("prefs-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("prefs-save"); if (btn && window.UI) UI.setButtonLoading(btn, true, "Salvando…"); savePreferences(); if (btn && window.UI) { btn.textContent = "Salvar preferências"; UI.setButtonLoading(btn, false); } });
+  document.getElementById("role-form").addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("role-save"); if (btn && window.UI) UI.setButtonLoading(btn, true, "Salvando…"); saveRole(); if (btn && window.UI) { btn.textContent = "Salvar acesso"; UI.setButtonLoading(btn, false); } });
   document.getElementById("backup-export").addEventListener("click", function () { backupExport(); });
   document.getElementById("backup-import").addEventListener("click", function () { var f = document.getElementById("backup-import-file"); if (f) f.click(); });
   var importFile = document.getElementById("backup-import-file");
@@ -208,9 +210,9 @@
   var restoreBtn = document.getElementById("restore-demo");
   if (restoreBtn) restoreBtn.addEventListener("click", function () { restoreDemo(); });
   var notifForm = document.getElementById("notifications-form");
-  if (notifForm) notifForm.addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("notifications-save"); if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; } saveNotifications(); if (btn) { btn.disabled = false; btn.textContent = "Salvar notificações"; } });
+  if (notifForm) notifForm.addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("notifications-save"); if (btn && window.UI) UI.setButtonLoading(btn, true, "Salvando…"); saveNotifications(); if (btn && window.UI) { btn.textContent = "Salvar notificações"; UI.setButtonLoading(btn, false); } });
   var rulesForm = document.getElementById("rules-form");
-  if (rulesForm) rulesForm.addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("rules-save"); if (btn) { btn.disabled = true; btn.textContent = "Salvando…"; } saveRules(); if (btn) { btn.disabled = false; btn.textContent = "Salvar regras"; } });
+  if (rulesForm) rulesForm.addEventListener("submit", function (e) { e.preventDefault(); var btn = document.getElementById("rules-save"); if (btn && window.UI) UI.setButtonLoading(btn, true, "Salvando…"); saveRules(); if (btn && window.UI) { btn.textContent = "Salvar regras"; UI.setButtonLoading(btn, false); } });
   loadProfile();
   loadPreferences();
   loadRole();

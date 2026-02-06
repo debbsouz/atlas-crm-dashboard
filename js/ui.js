@@ -71,4 +71,23 @@
   }
   window.Toast = { show: showToast };
   window.Confirm = { open: openConfirm };
+  function setButtonLoading(btn, loading, text) {
+    if (!btn) return;
+    if (loading) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      if (typeof text === "string") {
+        btn.dataset._origText = btn.textContent;
+        btn.textContent = text;
+      }
+    } else {
+      btn.disabled = false;
+      btn.classList.remove("is-loading");
+      if (btn.dataset && btn.dataset._origText) {
+        btn.textContent = btn.dataset._origText;
+        delete btn.dataset._origText;
+      }
+    }
+  }
+  window.UI = { setButtonLoading: setButtonLoading };
 })(); 
