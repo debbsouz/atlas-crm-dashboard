@@ -27,6 +27,7 @@ Atlas CRM é um CRM de vendas desenvolvido em HTML, CSS e JavaScript, com foco e
 <img width="298" height="280" alt="image" src="https://github.com/user-attachments/assets/0af3644e-dce6-4db6-89e1-848b4d6ff26e" />
 <img width="299" height="268" alt="image" src="https://github.com/user-attachments/assets/8d6f9e55-937d-438c-9800-314bb6e10472" />
 <img width="291" height="422" alt="image" src="https://github.com/user-attachments/assets/12e6bf77-e77c-4b1a-8e8f-c265fe36fabe" />
+
 ## Prints do DEPOIS
 <img width="1050" height="802" alt="image" src="https://github.com/user-attachments/assets/e9937104-dfac-455b-8729-4993c3ef97cf" />
 <img width="1710" height="858" alt="image" src="https://github.com/user-attachments/assets/fa33de77-3c37-4922-86c0-db174d72f467" />
